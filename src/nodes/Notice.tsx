@@ -1,12 +1,10 @@
 import { wrappingInputRule } from "prosemirror-inputrules";
 import toggleWrap from "../commands/toggleWrap";
-// import { WarningIcon, InfoIcon, StarredIcon } from "outline-icons";
+import { WarningIcon, InfoIcon, StarredIcon } from "outline-icons";
 import * as React from "react";
 import ReactDOM from "react-dom";
 import Node from "./Node";
 import noticesRule from "../rules/notices";
-// TODO: icon from project dep
-import IconFont from '../../components/IconFont';
 
 export default class Notice extends Node {
   get styleOptions() {
@@ -62,24 +60,24 @@ export default class Notice extends Node {
               : dom.className.includes("danger")
               ? "dagner"
               : undefined,
-          })
+          }),
         },
       ],
       toDOM: node => {
         let component;
         let title = node.attrs.title;
         if (node.attrs.style === "tip") {
-          component = <IconFont type="icon-tip" />;
-          title = title || this.titles['tip'];
+          component = <StarredIcon color="currentColor" />;
+          title = title || this.titles["tip"];
         } else if (node.attrs.style === "warning") {
-          component = <IconFont type="icon-warning" />;
-          title = title || this.titles['warning'];
+          component = <WarningIcon color="currentColor" />;
+          title = title || this.titles["warning"];
         } else if (node.attrs.style === "danger") {
-          component = <IconFont type="icon-danger" />;
-          title = title || this.titles['danger'];
+          component = <WarningIcon color="currentColor" />;
+          title = title || this.titles["danger"];
         } else {
-          component = <IconFont type="icon-info" />;
-          title = title || this.titles['info'];
+          component = <InfoIcon color="currentColor" />;
+          title = title || this.titles["info"];
         }
 
         const icon = document.createElement("div");
@@ -97,7 +95,7 @@ export default class Notice extends Node {
         });
 
         const select = document.createElement("select");
-        select.addEventListener("change", (event) => {
+        select.addEventListener("change", event => {
           this.handleStyleChange(event, node.attrs.title);
         });
 
@@ -147,7 +145,12 @@ export default class Notice extends Node {
   }
 
   toMarkdown(state, node) {
-    state.write("\n:::" + (node.attrs.style || "info") + (node.attrs.title ? " " + node.attrs.title : "") + "\n");
+    state.write(
+      "\n:::" +
+        (node.attrs.style || "info") +
+        (node.attrs.title ? " " + node.attrs.title : "") +
+        "\n"
+    );
     state.renderContent(node);
     state.ensureNewLine();
     state.write(":::");
@@ -162,7 +165,7 @@ export default class Notice extends Node {
         return {
           style: result && result[1],
           title: result && result[2],
-        }
+        };
       },
     };
   }

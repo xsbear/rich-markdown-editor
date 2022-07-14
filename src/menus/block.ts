@@ -12,14 +12,12 @@ import {
   TodoListIcon,
   ImageIcon,
   StarredIcon,
-  // WarningIcon,
-  // InfoIcon,
+  WarningIcon,
+  InfoIcon,
   LinkIcon,
 } from "outline-icons";
 import { MenuItem } from "../types";
 import baseDictionary from "../dictionary";
-// TODO: icon from project dep
-import { InfoIcon, WarningIcon, TipIcon, DangerIcon } from '../../components/IconFont';
 
 const SSR = typeof window === "undefined";
 const isMac = !SSR && window.navigator.platform === "MacIntel";
@@ -144,14 +142,14 @@ export default function blockMenuItems(
     {
       name: "container_notice",
       title: dictionary.tipNotice,
-      icon: TipIcon,
+      icon: StarredIcon,
       keywords: "container_notice card suggestion",
       attrs: { style: "tip" },
     },
     {
       name: "container_notice",
       title: dictionary.dangerNotice,
-      icon: DangerIcon,
+      icon: WarningIcon,
       keywords: "container_notice card danger",
       attrs: { style: "danger" },
     },
