@@ -473,7 +473,7 @@ const Caption = styled.p`
   color: ${props => props.theme.textSecondary};
   padding: 2px 0;
   line-height: 16px;
-  text-align: center;
+  // text-align: center;
   min-height: 1em;
   outline: none;
   background: none;

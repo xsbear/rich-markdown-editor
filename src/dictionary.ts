@@ -59,6 +59,8 @@ export const base = {
   tipNotice: "Tip notice",
   warning: "Warning",
   warningNotice: "Warning notice",
+  danger: "Danger",
+  dangerNotice: "Danger notice",
 };
 
 export default base;

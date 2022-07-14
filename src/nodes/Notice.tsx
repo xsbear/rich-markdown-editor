@@ -1,10 +1,12 @@
 import { wrappingInputRule } from "prosemirror-inputrules";
 import toggleWrap from "../commands/toggleWrap";
-import { WarningIcon, InfoIcon, StarredIcon } from "outline-icons";
+// import { WarningIcon, InfoIcon, StarredIcon } from "outline-icons";
 import * as React from "react";
 import ReactDOM from "react-dom";
 import Node from "./Node";
 import noticesRule from "../rules/notices";
+// TODO: icon from project dep
+import IconFont from '../../components/IconFont';
 
 export default class Notice extends Node {
   get styleOptions() {
@@ -12,7 +14,17 @@ export default class Notice extends Node {
       info: this.options.dictionary.info,
       warning: this.options.dictionary.warning,
       tip: this.options.dictionary.tip,
+      danger: this.options.dictionary.danger,
     });
+  }
+
+  get titles() {
+    return {
+      info: this.options.dictionary.infoTitle,
+      warning: this.options.dictionary.warningTitle,
+      tip: this.options.dictionary.tipTitle,
+      danger: this.options.dictionary.dangerTitle,
+    };
   }
 
   get name() {
@@ -29,6 +41,9 @@ export default class Notice extends Node {
         style: {
           default: "info",
         },
+        title: {
+          default: "",
+        },
       },
       content: "block+",
       group: "block",
@@ -44,13 +59,47 @@ export default class Notice extends Node {
               ? "tip"
               : dom.className.includes("warning")
               ? "warning"
+              : dom.className.includes("danger")
+              ? "dagner"
               : undefined,
-          }),
+          })
         },
       ],
       toDOM: node => {
+        let component;
+        let title = node.attrs.title;
+        if (node.attrs.style === "tip") {
+          component = <IconFont type="icon-tip" />;
+          title = title || this.titles['tip'];
+        } else if (node.attrs.style === "warning") {
+          component = <IconFont type="icon-warning" />;
+          title = title || this.titles['warning'];
+        } else if (node.attrs.style === "danger") {
+          component = <IconFont type="icon-danger" />;
+          title = title || this.titles['danger'];
+        } else {
+          component = <IconFont type="icon-info" />;
+          title = title || this.titles['info'];
+        }
+
+        const icon = document.createElement("div");
+        icon.className = "title-icon";
+        ReactDOM.render(component, icon);
+
+        const input = document.createElement("input");
+        input.value = title;
+        input.addEventListener("change", () => {
+          if (input.value !== this.titles[node.attrs.style]) {
+            node.attrs.title = input.value;
+          } else {
+            node.attrs.title = "";
+          }
+        });
+
         const select = document.createElement("select");
-        select.addEventListener("change", this.handleStyleChange);
+        select.addEventListener("change", (event) => {
+          this.handleStyleChange(event, node.attrs.title);
+        });
 
         this.styleOptions.forEach(([key, label]) => {
           const option = document.createElement("option");
@@ -60,24 +109,11 @@ export default class Notice extends Node {
           select.appendChild(option);
         });
 
-        let component;
-
-        if (node.attrs.style === "tip") {
-          component = <StarredIcon color="currentColor" />;
-        } else if (node.attrs.style === "warning") {
-          component = <WarningIcon color="currentColor" />;
-        } else {
-          component = <InfoIcon color="currentColor" />;
-        }
-
-        const icon = document.createElement("div");
-        icon.className = "icon";
-        ReactDOM.render(component, icon);
-
         return [
           "div",
           { class: `notice-block ${node.attrs.style}` },
           icon,
+          ["div", { class: "title", contentEditable: false }, input],
           ["div", { contentEditable: false }, select],
           ["div", { class: "content" }, 0],
         ];
@@ -89,7 +125,7 @@ export default class Notice extends Node {
     return attrs => toggleWrap(type, attrs);
   }
 
-  handleStyleChange = event => {
+  handleStyleChange = (event, title) => {
     const { view } = this.editor;
     const { tr } = view.state;
     const element = event.target;
@@ -99,8 +135,10 @@ export default class Notice extends Node {
     if (result) {
       const transaction = tr.setNodeMarkup(result.inside, undefined, {
         style: element.value,
+        title,
       });
       view.dispatch(transaction);
+      view.focus();
     }
   };
 
@@ -109,7 +147,7 @@ export default class Notice extends Node {
   }
 
   toMarkdown(state, node) {
-    state.write("\n:::" + (node.attrs.style || "info") + "\n");
+    state.write("\n:::" + (node.attrs.style || "info") + (node.attrs.title ? " " + node.attrs.title : "") + "\n");
     state.renderContent(node);
     state.ensureNewLine();
     state.write(":::");
@@ -119,7 +157,13 @@ export default class Notice extends Node {
   parseMarkdown() {
     return {
       block: "container_notice",
-      getAttrs: tok => ({ style: tok.info }),
+      getAttrs: tok => {
+        const result = /\s*(\w+)(?:\s{1,}(.*))?/.exec(tok.info);
+        return {
+          style: result && result[1],
+          title: result && result[2],
+        }
+      },
     };
   }
 }

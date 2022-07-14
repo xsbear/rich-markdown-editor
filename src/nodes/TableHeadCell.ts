@@ -13,15 +13,29 @@ export default class TableHeadCell extends Node {
       content: "paragraph+",
       tableRole: "header_cell",
       isolating: true,
-      parseDOM: [{ tag: "th" }],
+      parseDOM: [{
+        tag: "th",
+        getAttrs: (dom: HTMLDivElement) => ({
+          colspan: Number(dom.getAttribute("colspan")) || 1,
+          rowspan: Number(dom.getAttribute("rowspan")) || 1,
+        }),
+      }],
       toDOM(node) {
-        return [
-          "th",
-          node.attrs.alignment
-            ? { style: `text-align: ${node.attrs.alignment}` }
-            : {},
-          0,
-        ];
+        const attrs: {
+          style?: string
+          colspan?: string
+          rowspan?: string
+        } = {};
+        if (node.attrs.alignment) {
+          attrs.style = `text-align: ${node.attrs.alignment}`;
+        }
+        if (node.attrs.colspan && node.attrs.colspan > 1) {
+          attrs.colspan = node.attrs.colspan;
+        }
+        if (node.attrs.rowspan && node.attrs.rowspan > 1) {
+          attrs.rowspan = node.attrs.rowspan;
+        }
+        return ["th", attrs, 0];
       },
       attrs: {
         colspan: { default: 1 },
@@ -38,7 +52,11 @@ export default class TableHeadCell extends Node {
   parseMarkdown() {
     return {
       block: "th",
-      getAttrs: tok => ({ alignment: tok.info }),
+      getAttrs: tok => ({
+        alignment: tok.info,
+        colspan: tok.attrGet("colspan") || undefined,
+        rowspan: tok.attrGet("rowspan") || undefined,
+      }),
     };
   }
 

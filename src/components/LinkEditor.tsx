@@ -10,7 +10,7 @@ import {
   OpenIcon,
 } from "outline-icons";
 import styled, { withTheme } from "styled-components";
-import isUrl from "../lib/isUrl";
+// import isUrl from "../lib/isUrl";
 import theme from "../styles/theme";
 import Flex from "./Flex";
 import Input from "./Input";
@@ -111,14 +111,14 @@ class LinkEditor extends React.Component<Props, State> {
 
     // Make sure a protocol is added to the beginning of the input if it's
     // likely an absolute URL that was entered without one.
-    if (
-      !isUrl(href) &&
-      !href.startsWith("/") &&
-      !href.startsWith("#") &&
-      !href.startsWith("mailto:")
-    ) {
-      href = `https://${href}`;
-    }
+    // if (
+    //   !isUrl(href) &&
+    //   !href.startsWith("/") &&
+    //   !href.startsWith("#") &&
+    //   !href.startsWith("mailto:")
+    // ) {
+    //   href = `https://${href}`;
+    // }
 
     this.props.onSelectLink({ href, title, from, to });
   };
@@ -298,7 +298,7 @@ class LinkEditor extends React.Component<Props, State> {
     return (
       <Wrapper>
         <Input
-          value={value}
+          value={decodeURIComponent(value)}
           placeholder={
             showCreateLink
               ? dictionary.findOrCreateDoc

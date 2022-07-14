@@ -24,34 +24,34 @@ export default function imageMenuItems(
   });
 
   return [
-    {
-      name: "alignLeft",
-      tooltip: dictionary.alignLeft,
-      icon: AlignImageLeftIcon,
-      visible: true,
-      active: isLeftAligned,
-    },
-    {
-      name: "alignCenter",
-      tooltip: dictionary.alignCenter,
-      icon: AlignImageCenterIcon,
-      visible: true,
-      active: state =>
-        isNodeActive(schema.nodes.image)(state) &&
-        !isLeftAligned(state) &&
-        !isRightAligned(state),
-    },
-    {
-      name: "alignRight",
-      tooltip: dictionary.alignRight,
-      icon: AlignImageRightIcon,
-      visible: true,
-      active: isRightAligned,
-    },
-    {
-      name: "separator",
-      visible: true,
-    },
+    // {
+    //   name: "alignLeft",
+    //   tooltip: dictionary.alignLeft,
+    //   icon: AlignImageLeftIcon,
+    //   visible: true,
+    //   active: isLeftAligned,
+    // },
+    // {
+    //   name: "alignCenter",
+    //   tooltip: dictionary.alignCenter,
+    //   icon: AlignImageCenterIcon,
+    //   visible: true,
+    //   active: state =>
+    //     isNodeActive(schema.nodes.image)(state) &&
+    //     !isLeftAligned(state) &&
+    //     !isRightAligned(state),
+    // },
+    // {
+    //   name: "alignRight",
+    //   tooltip: dictionary.alignRight,
+    //   icon: AlignImageRightIcon,
+    //   visible: true,
+    //   active: isRightAligned,
+    // },
+    // {
+    //   name: "separator",
+    //   visible: true,
+    // },
     {
       name: "downloadImage",
       tooltip: dictionary.downloadImage,

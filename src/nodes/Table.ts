@@ -1,4 +1,3 @@
-import Node from "./Node";
 import { Decoration, DecorationSet } from "prosemirror-view";
 import {
   addColumnAfter,
@@ -22,7 +21,9 @@ import {
   moveRow,
 } from "prosemirror-utils";
 import { Plugin, TextSelection } from "prosemirror-state";
+import multimdTableRule from 'markdown-it-multimd-table';
 import tablesRule from "../rules/tables";
+import Node from "./Node";
 
 export default class Table extends Node {
   get name() {
@@ -51,7 +52,7 @@ export default class Table extends Node {
   }
 
   get rulePlugins() {
-    return [tablesRule];
+    return [tablesRule, multimdTableRule];
   }
 
   commands({ schema }) {

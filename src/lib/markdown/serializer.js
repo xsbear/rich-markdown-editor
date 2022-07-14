@@ -314,7 +314,7 @@ export class MarkdownSerializerState {
     node.forEach((row, _, i) => {
       // cols
       row.forEach((cell, _, j) => {
-        this.out += j === 0 ? "| " : " | ";
+        this.out += (j === 0 || row.child(j - 1).attrs.colspan > 1) ? "| " : " | ";
 
         cell.forEach(para => {
           // just padding the output so that empty cells take up the same space
@@ -329,6 +329,10 @@ export class MarkdownSerializerState {
           }
         });
 
+        if (cell.attrs.colspan > 1) {
+          this.out += (new Array(cell.attrs.colspan)).join('|');
+        }
+
         if (i === 0) {
           if (cell.attrs.alignment === "center") {
             headerBuffer += "|:---:";
@@ -342,7 +346,11 @@ export class MarkdownSerializerState {
         }
       });
 
-      this.out += " |\n";
+      if (row.content.lastChild.attrs.colspan > 1) {
+        this.out += "|\n";
+      } else {
+        this.out += " |\n";
+      }
 
       if (headerBuffer) {
         this.out += `${headerBuffer}|\n`;

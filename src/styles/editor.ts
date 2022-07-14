@@ -33,7 +33,7 @@ export const StyledEditor = styled("div")<{
   }
 
   .image {
-    text-align: center;
+    // text-align: center;
     max-width: 100%;
     clear: both;
 
@@ -308,8 +308,6 @@ export const StyledEditor = styled("div")<{
   }
 
   .notice-block {
-    display: flex;
-    align-items: center;
     background: ${props => props.theme.noticeInfoBackground};
     color: ${props => props.theme.noticeInfoText};
     border-radius: 4px;
@@ -326,17 +324,25 @@ export const StyledEditor = styled("div")<{
   }
 
   .notice-block .content {
-    flex-grow: 1;
-    min-width: 0;
+    margin-top: 8px;
   }
 
-  .notice-block .icon {
-    width: 24px;
-    height: 24px;
-    align-self: flex-start;
+  .notice-block .title-icon {
+    display: inline-block;
     margin-${props => (props.rtl ? "left" : "right")}: 4px;
-    position: relative;
-    top: 1px;
+
+    svg {
+      color: ${props => props.theme.primaryColor};
+    }
+  }
+
+  .notice-block .title {
+    display: inline-block;
+
+    input {
+      border: 0;
+      background-color: transparent;
+    }
   }
 
   .notice-block.tip {
@@ -346,6 +352,10 @@ export const StyledEditor = styled("div")<{
     a {
       color: ${props => props.theme.noticeTipText};
     }
+
+    .title-icon svg {
+      color: ${props => props.theme.successColor};
+    }
   }
 
   .notice-block.warning {
@@ -354,6 +364,23 @@ export const StyledEditor = styled("div")<{
 
     a {
       color: ${props => props.theme.noticeWarningText};
+    }
+
+    .title-icon svg {
+      color: ${props => props.theme.warningColor};
+    }
+  }
+
+  .notice-block.danger {
+    background: ${props => props.theme.noticeDangerBackground};
+    color: ${props => props.theme.noticeDangerText};
+
+    a {
+      color: ${props => props.theme.noticeDangerText};
+    }
+
+    .title-icon svg {
+      color: ${props => props.theme.errorColor};
     }
   }
 
