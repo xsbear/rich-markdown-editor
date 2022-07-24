@@ -21,7 +21,7 @@ import {
   moveRow,
 } from "prosemirror-utils";
 import { Plugin, TextSelection } from "prosemirror-state";
-import multimdTableRule from 'markdown-it-multimd-table';
+import multimdTableRule from "markdown-it-multimd-table";
 import tablesRule from "../rules/tables";
 import Node from "./Node";
 
@@ -52,7 +52,10 @@ export default class Table extends Node {
   }
 
   get rulePlugins() {
-    return [tablesRule, multimdTableRule];
+    return [
+      tablesRule,
+      { plugin: multimdTableRule, options: { rowspan: true } },
+    ];
   }
 
   commands({ schema }) {

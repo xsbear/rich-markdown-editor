@@ -33,7 +33,7 @@ export default class Extension {
     return [];
   }
 
-  get rulePlugins(): PluginSimple[] {
+  get rulePlugins(): (PluginSimple | { plugin: PluginSimple; options: any })[] {
     return [];
   }
 

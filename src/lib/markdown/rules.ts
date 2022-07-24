@@ -5,7 +5,7 @@ export default function rules({
   plugins = [],
 }: {
   rules?: Record<string, any>;
-  plugins?: PluginSimple[];
+  plugins?: (PluginSimple | { plugin: PluginSimple; options: any })[];
 }) {
   const markdownIt = markdownit("default", {
     breaks: false,
@@ -13,6 +13,12 @@ export default function rules({
     linkify: false,
     ...rules,
   });
-  plugins.forEach(plugin => markdownIt.use(plugin));
+  plugins.forEach(plugin => {
+    if (typeof plugin === "object") {
+      markdownIt.use(plugin.plugin, plugin.options);
+    } else {
+      markdownIt.use(plugin);
+    }
+  });
   return markdownIt;
 }
