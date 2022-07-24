@@ -33,7 +33,7 @@ export default class PasteHandler extends Extension {
     return [
       new Plugin({
         props: {
-          handlePaste: (view, event: ClipboardEvent) => {
+          handlePaste: (view, event: ClipboardEvent, slice) => {
             if (view.props.editable && !view.props.editable(view.state)) {
               return false;
             }
@@ -122,6 +122,10 @@ export default class PasteHandler extends Extension {
               return false;
             }
 
+            const sliceNodes = slice.content.content;
+            if (sliceNodes.some(node => node.type.name === "table")) {
+              return false;
+            }
             // If the text on the clipboard looks like Markdown OR there is no
             // html on the clipboard then try to parse content as Markdown
             if (

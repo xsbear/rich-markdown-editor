@@ -13,18 +13,20 @@ export default class TableHeadCell extends Node {
       content: "paragraph+",
       tableRole: "header_cell",
       isolating: true,
-      parseDOM: [{
-        tag: "th",
-        getAttrs: (dom: HTMLDivElement) => ({
-          colspan: Number(dom.getAttribute("colspan")) || 1,
-          rowspan: Number(dom.getAttribute("rowspan")) || 1,
-        }),
-      }],
+      parseDOM: [
+        {
+          tag: "th",
+          getAttrs: (dom: HTMLTableCellElement) => ({
+            colspan: Number(dom.getAttribute("colspan")) || 1,
+            rowspan: Number(dom.getAttribute("rowspan")) || 1,
+          }),
+        },
+      ],
       toDOM(node) {
         const attrs: {
-          style?: string
-          colspan?: string
-          rowspan?: string
+          style?: string;
+          colspan?: string;
+          rowspan?: string;
         } = {};
         if (node.attrs.alignment) {
           attrs.style = `text-align: ${node.attrs.alignment}`;
