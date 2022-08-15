@@ -307,14 +307,36 @@ export class MarkdownSerializerState {
     const prevTable = this.inTable;
     this.inTable = true;
 
+    this.headBodySeparator = 0;
+
     // ensure there is an empty newline above all tables
     this.out += "\n";
 
+    // cache for every header cell alignment
+    const cellAlignments = [];
     // rows
     node.forEach((row, _, i) => {
+      if (this.headBodySeparator === 1) {
+        this.headBodySeparator = 2;
+      }
+
+      // support multi header rows
+      if (
+        this.headBodySeparator === 0 &&
+        i < node.childCount &&
+        row.firstChild.type.name === "th" &&
+        node.content.content[i + 1].firstChild.type.name === "td"
+      ) {
+        this.headBodySeparator = 1;
+      }
+
+      let cellIndex = 0;
+      // console.log(row);
       // cols
       row.forEach((cell, _, j) => {
-        this.out += (j === 0 || row.child(j - 1).attrs.colspan > 1) ? "| " : " | ";
+        // console.log(cell);
+        this.out +=
+          j === 0 || row.child(j - 1).attrs.colspan > 1 ? "| " : " | ";
 
         cell.forEach(para => {
           // just padding the output so that empty cells take up the same space
@@ -330,18 +352,20 @@ export class MarkdownSerializerState {
         });
 
         if (cell.attrs.colspan > 1) {
-          this.out += (new Array(cell.attrs.colspan)).join('|');
+          this.out += new Array(cell.attrs.colspan).join("|");
         }
 
-        if (i === 0) {
-          if (cell.attrs.alignment === "center") {
-            headerBuffer += "|:---:";
-          } else if (cell.attrs.alignment === "left") {
-            headerBuffer += "|:---";
-          } else if (cell.attrs.alignment === "right") {
-            headerBuffer += "|---:";
-          } else {
-            headerBuffer += "|----";
+        if (this.headBodySeparator < 2) {
+          if (j === 0) {
+            cellIndex = 0;
+          }
+          for (
+            let ci = cellIndex, currentIndex = cellIndex;
+            ci < currentIndex + (cell.attrs.colspan || 1);
+            ci++
+          ) {
+            cellIndex++;
+            cellAlignments[ci] = cellAlignments[ci] || cell.attrs.alignment;
           }
         }
       });
@@ -352,12 +376,23 @@ export class MarkdownSerializerState {
         this.out += " |\n";
       }
 
-      if (headerBuffer) {
-        this.out += `${headerBuffer}|\n`;
-        headerBuffer = undefined;
+      if (this.headBodySeparator === 1) {
+        cellAlignments.forEach(item => {
+          if (item === "center") {
+            this.out += "|:---:";
+          } else if (item === "left") {
+            this.out += "|:---";
+          } else if (item === "right") {
+            this.out += "|---:";
+          } else {
+            this.out += "|----";
+          }
+        });
+        this.out += `|\n`;
       }
     });
 
+    console.log(cellAlignments);
     this.inTable = prevTable;
   }
 
