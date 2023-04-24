@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const { ProgressPlugin } = require("webpack");
 
 module.exports = {
@@ -21,24 +19,16 @@ module.exports = {
   },
   output: {
     filename: "[name].js",
-    chunkFilename: "[name].js",
     path: path.resolve(__dirname, "./dist"),
     publicPath: "/",
+    library: {
+      name: "RichMarkdownEditor",
+      type: "umd",
+    },
   },
-  entry: { app: path.resolve(__dirname, "./index.tsx") },
-  devServer: {
-    allowedHosts: "all",
-    host: "0.0.0.0",
-    port: 3000,
-  },
-  watchOptions: { aggregateTimeout: 600, ignored: ["**/node_modules"] },
-  stats: { preset: "errors-only", timings: true },
-  mode: "development",
+  entry: { "rich-markdown-editor": path.resolve(__dirname, "./src/index.tsx") },
+  mode: "production",
   plugins: [
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "./index.html"),
-    }),
-    new ReactRefreshWebpackPlugin(),
     new ProgressPlugin({
       activeModules: false,
       entries: true,
@@ -67,7 +57,6 @@ module.exports = {
           {
             loader: "babel-loader",
             options: {
-              plugins: ["react-refresh/babel"],
               presets: [
                 "@babel/preset-typescript",
                 "@babel/preset-env",
@@ -78,5 +67,21 @@ module.exports = {
         ],
       },
     ],
+  },
+  externals: {
+    react: {
+      root: "React",
+      commonjs2: "react",
+      commonjs: "react",
+      amd: "react",
+      umd: "react",
+    },
+    "react-dom": {
+      root: "ReactDOM",
+      commonjs2: "react-dom",
+      commonjs: "react-dom",
+      amd: "react-dom",
+      umd: "react-dom",
+    },
   },
 };

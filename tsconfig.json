@@ -16,7 +16,7 @@
       "jest"
     ],
     "rootDir": "src",
-    "outDir": "dist",
+    "outDir": "../console-docs/client/rme",
     "stripInternal": true,
     "removeComments": true,
     "declarationMap": true,
