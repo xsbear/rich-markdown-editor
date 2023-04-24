@@ -4,16 +4,24 @@ export default function notice(md): void {
   return customFence(md, "notice", {
     marker: ":",
     validate: () => true,
-    render: function(tokens, idx) {
-      const { info } = tokens[idx];
+    render: function(tokens, idx, options, env) {
+      console.log(env);
+      const { info, nesting } = tokens[idx];
+      console.log(info);
 
-      if (tokens[idx].nesting === 1) {
+      const m = info.trim().match(/^(info|tip|warning|danger)(?:\s+(.*))?$/);
+
+      if (nesting === 1) {
         // opening tag
-        return `<div class="notice notice-${md.utils.escapeHtml(info)}">\n`;
-      } else {
-        // closing tag
-        return "</div>\n";
+        let html = `<div class="notice-block ${m[1]}">\n`;
+        html += `\t<div class="title"><i class="iconfont icon-${
+          m[1]
+        }"></i> ${m[2] || env.notice[`${m[1]}Title`]}</div>\n`;
+        html += '\t<div class="content">\n';
+        return html;
       }
+      // closing tag
+      return "\t</div>\n</div>\n";
     },
   });
 }

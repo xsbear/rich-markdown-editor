@@ -146,5 +146,12 @@ export default function blockMenuItems(
       keywords: "container_notice card suggestion",
       attrs: { style: "tip" },
     },
+    {
+      name: "container_notice",
+      title: dictionary.dangerNotice,
+      icon: WarningIcon,
+      keywords: "container_notice card danger",
+      attrs: { style: "danger" },
+    },
   ];
 }
