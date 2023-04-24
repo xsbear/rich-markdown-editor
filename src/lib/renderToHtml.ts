@@ -1,5 +1,5 @@
 import createMarkdown from "./markdown/rules";
-import { PluginSimple } from "markdown-it";
+import { Options, PluginSimple } from "markdown-it";
 import markRule from "../rules/mark";
 import checkboxRule from "../rules/checkboxes";
 import embedsRule from "../rules/embeds";
@@ -23,9 +23,16 @@ const defaultRules = [
 
 export default function renderToHtml(
   markdown: string,
-  rulePlugins: PluginSimple[] = defaultRules
+  rulePlugins: PluginSimple[] = defaultRules,
+  renderOptions: Options = {},
+  pluginOptions: { [key: string]: any } = {},
+  extraPlugins: (PluginSimple | [PluginSimple, any])[] = []
 ): string {
-  return createMarkdown({ plugins: rulePlugins })
-    .render(markdown)
+  return createMarkdown({
+    plugins: rulePlugins,
+    rules: renderOptions,
+    extraPlugins,
+  })
+    .render(markdown, pluginOptions)
     .trim();
 }

@@ -1,4 +1,5 @@
 import { Schema } from "prosemirror-model";
+import { Options, PluginSimple } from "markdown-it";
 import ExtensionManager from "./lib/ExtensionManager";
 import render from "./lib/renderToHtml";
 
@@ -81,5 +82,16 @@ export const parser = extensions.parser({
 
 export const serializer = extensions.serializer();
 
-export const renderToHtml = (markdown: string): string =>
-  render(markdown, extensions.rulePlugins);
+export const renderToHtml = (
+  markdown: string,
+  options: Options = {},
+  pluginOptions?: { [key: string]: any },
+  extraPlugins?: (PluginSimple | [PluginSimple, any])[]
+): string =>
+  render(
+    markdown,
+    extensions.rulePlugins,
+    options,
+    pluginOptions,
+    extraPlugins
+  );
