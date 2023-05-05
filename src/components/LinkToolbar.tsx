@@ -15,6 +15,7 @@ type Props = {
   onClickLink: (href: string, event: MouseEvent) => void;
   onShowToast?: (msg: string, code: string) => void;
   onClose: () => void;
+  autoAddProtocol?: boolean;
 };
 
 function isActive(props: Props) {

@@ -41,6 +41,7 @@ type Props = {
   }) => void;
   onClickLink: (href: string, event: MouseEvent) => void;
   onShowToast?: (message: string, code: string) => void;
+  autoAddProtocol?: boolean;
   view: EditorView;
   theme: typeof theme;
 };
@@ -112,6 +113,7 @@ class LinkEditor extends React.Component<Props, State> {
     // Make sure a protocol is added to the beginning of the input if it's
     // likely an absolute URL that was entered without one.
     if (
+      this.props.autoAddProtocol &&
       !isUrl(href) &&
       !href.startsWith("/") &&
       !href.startsWith("#") &&

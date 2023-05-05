@@ -54,6 +54,7 @@ const Editor = (): ReactElement => {
           theme={Theme}
           uploadImage={onImageUpload}
           onChange={onChange}
+          linkAutoAddProtocol={false}
           // noticeIcons={{ info: PageEidtIcon }}
         />
       </div>

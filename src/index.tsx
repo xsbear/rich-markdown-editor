@@ -146,6 +146,7 @@ export type Props = {
   onSearchLink?: (term: string) => Promise<SearchResult[]>;
   onClickLink: (href: string, event: MouseEvent) => void;
   onHoverLink?: (event: MouseEvent) => boolean;
+  linkAutoAddProtocol?: boolean;
   onClickHashtag?: (tag: string, event: MouseEvent) => void;
   onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   embeds: EmbedDescriptor[];
@@ -192,6 +193,7 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
     embeds: [],
     extensions: [],
     tooltip: Tooltip,
+    linkAutoAddProtocol: true,
   };
 
   state = {
@@ -781,6 +783,7 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
                   onSearchLink={this.props.onSearchLink}
                   onClickLink={this.props.onClickLink}
                   onCreateLink={this.props.onCreateLink}
+                  autoAddProtocol={this.props.linkAutoAddProtocol}
                   tooltip={tooltip}
                 />
                 <LinkToolbar
@@ -792,6 +795,7 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
                   onClickLink={this.props.onClickLink}
                   onShowToast={this.props.onShowToast}
                   onClose={this.handleCloseLinkMenu}
+                  autoAddProtocol={this.props.linkAutoAddProtocol}
                   tooltip={tooltip}
                 />
                 <EmojiMenu

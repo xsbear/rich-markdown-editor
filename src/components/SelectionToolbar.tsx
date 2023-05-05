@@ -34,6 +34,7 @@ type Props = {
   onClickLink: (href: string, event: MouseEvent) => void;
   onCreateLink?: (title: string) => Promise<string>;
   onShowToast?: (msg: string, code: string) => void;
+  autoAddProtocol?: boolean;
   view: EditorView;
 };
 
