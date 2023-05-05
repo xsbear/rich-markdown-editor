@@ -25,6 +25,17 @@ export default class Notice extends Node {
     };
   }
 
+  get icons() {
+    return {
+      info: this.options.icons?.info || <InfoIcon color="currentColor" />,
+      // eslint-disable-next-line prettier/prettier
+      warning: this.options.icons?.warning || <WarningIcon color="currentColor" />,
+      tip: this.options.icons?.tip || <StarredIcon color="currentColor" />,
+      // eslint-disable-next-line prettier/prettier
+      danger: this.options.icons?.danger || <WarningIcon color="currentColor" />,
+    };
+  }
+
   get name() {
     return "container_notice";
   }
@@ -64,25 +75,20 @@ export default class Notice extends Node {
         },
       ],
       toDOM: node => {
-        let component;
         let title = node.attrs.title;
         if (node.attrs.style === "tip") {
-          component = <StarredIcon color="currentColor" />;
           title = title || this.titles["tip"];
         } else if (node.attrs.style === "warning") {
-          component = <WarningIcon color="currentColor" />;
           title = title || this.titles["warning"];
         } else if (node.attrs.style === "danger") {
-          component = <WarningIcon color="currentColor" />;
           title = title || this.titles["danger"];
         } else {
-          component = <InfoIcon color="currentColor" />;
           title = title || this.titles["info"];
         }
 
         const icon = document.createElement("div");
         icon.className = "title-icon";
-        ReactDOM.render(component, icon);
+        ReactDOM.render(this.icons[node.attrs.style], icon);
 
         const input = document.createElement("input");
         input.value = title;

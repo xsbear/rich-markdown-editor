@@ -30,6 +30,9 @@ module.exports = {
     allowedHosts: "all",
     host: "0.0.0.0",
     port: 3000,
+    client: {
+      overlay: false,
+    },
   },
   watchOptions: { aggregateTimeout: 600, ignored: ["**/node_modules"] },
   stats: { preset: "errors-only", timings: true },

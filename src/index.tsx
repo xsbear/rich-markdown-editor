@@ -153,6 +153,12 @@ export type Props = {
   tooltip: typeof React.Component | React.FC<any>;
   className?: string;
   style?: React.CSSProperties;
+  noticeIcons?: {
+    info?: React.Component | React.FC<any>;
+    warning?: React.Component | React.FC<any>;
+    tip?: React.Component | React.FC<any>;
+    danger?: React.Component | React.FC<any>;
+  };
 };
 
 type State = {
@@ -334,6 +340,7 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
           new ListItem(),
           new Notice({
             dictionary,
+            icons: this.props.noticeIcons,
           }),
           new Heading({
             dictionary,

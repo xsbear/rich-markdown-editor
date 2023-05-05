@@ -1,6 +1,7 @@
 import React, { ReactElement } from "react";
 
 import RMEditor from "../src";
+import CustomTheme from "./custom-theme";
 
 const NoticePluginTitles = {
   infoTitle: "说明",
@@ -18,6 +19,25 @@ const Dictionary = {
   ...NoticePluginTitles,
 };
 
+const Theme = {
+  ...CustomTheme,
+  // noticeInfoBackground: "#F5BE31",
+  // noticeInfoText: colors.almostBlack,
+  // noticeTipBackground: "#9E5CF7",
+  // noticeTipText: colors.white,
+  noticeWarningText: "#333",
+  noticeWarningBackground: "rgba(255, 171, 10, 0.06)",
+};
+
+const onImageUpload = (file: File) =>
+  new Promise<string>(resolve => {
+    resolve(window.URL.createObjectURL(file));
+  });
+
+const onChange = (callback: () => string) => {
+  console.log(callback());
+};
+
 const Editor = (): ReactElement => {
   return (
     <div style={{ margin: "50px 100px" }}>
@@ -29,7 +49,13 @@ const Editor = (): ReactElement => {
           padding: "10px 30px",
         }}
       >
-        <RMEditor dictionary={Dictionary} />
+        <RMEditor
+          dictionary={Dictionary}
+          theme={Theme}
+          uploadImage={onImageUpload}
+          onChange={onChange}
+          // noticeIcons={{ info: PageEidtIcon }}
+        />
       </div>
     </div>
   );
