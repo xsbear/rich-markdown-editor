@@ -300,7 +300,8 @@ class LinkEditor extends React.Component<Props, State> {
     return (
       <Wrapper>
         <Input
-          value={value}
+          // TODO: handle non ascii characters display in input
+          value={decodeURIComponent(value)}
           placeholder={
             showCreateLink
               ? dictionary.findOrCreateDoc

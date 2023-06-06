@@ -374,15 +374,15 @@ export const StyledEditor = styled("div")<{
   }
 
   .notice-block.danger {
-    background: ${props => props.theme.noticeWarningBackground};
-    color: ${props => props.theme.noticeWarningText};
+    background: ${props => props.theme.noticeDangerBackground};
+    color: ${props => props.theme.noticeDangerText};
 
     a {
-      color: ${props => props.theme.noticeWarningText};
+      color: ${props => props.theme.noticeDangerText};
     }
 
     .title-icon svg {
-      color: ${props => props.theme.warningColor};
+      color: ${props => props.theme.errorColor};
     }
   }
 

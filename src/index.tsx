@@ -155,10 +155,10 @@ export type Props = {
   className?: string;
   style?: React.CSSProperties;
   noticeIcons?: {
-    info?: React.Component | React.FC<any>;
-    warning?: React.Component | React.FC<any>;
-    tip?: React.Component | React.FC<any>;
-    danger?: React.Component | React.FC<any>;
+    info?: React.Component | JSX.Element;
+    warning?: React.Component | JSX.Element;
+    tip?: React.Component | JSX.Element;
+    danger?: React.Component | JSX.Element;
   };
 };
 

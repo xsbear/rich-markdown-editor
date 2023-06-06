@@ -5,9 +5,7 @@ export default function notice(md): void {
     marker: ":",
     validate: () => true,
     render: function(tokens, idx, options, env) {
-      console.log(env);
       const { info, nesting } = tokens[idx];
-      console.log(info);
 
       const m = info.trim().match(/^(info|tip|warning|danger)(?:\s+(.*))?$/);
 
