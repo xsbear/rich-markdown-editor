@@ -10,9 +10,8 @@
     "test": "jest",
     "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet",
     "start": "webpack serve -c ./examples/webpack.config.js",
-    "build": "tsc",
-    "preversion": "yarn build",
-    "watch": "yarn tsc-watch",
+    "umd-test": "webpack serve -c ./examples/webpack.config.umd.js",
+    "build": "rm -rf ./dist && webpack",
     "build-storybook": "build-storybook"
   },
   "serve": {
