@@ -7,7 +7,10 @@ export default function notice(md): void {
     render: function(tokens, idx, options, env) {
       const { info, nesting } = tokens[idx];
 
-      const m = info.trim().match(/^(info|tip|warning|danger)(?:\s+(.*))?$/);
+      let m = info.trim().match(/^(info|tip|warning|danger)(?:\s+(.*))?$/);
+      if (!m) {
+        m = ["", "info", ""];
+      }
 
       if (nesting === 1) {
         // opening tag
