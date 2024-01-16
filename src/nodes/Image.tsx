@@ -4,6 +4,9 @@ import { Plugin, TextSelection, NodeSelection } from "prosemirror-state";
 import { InputRule } from "prosemirror-inputrules";
 import styled from "styled-components";
 import ImageZoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
+import { Resizable } from "react-resizable";
+import "react-resizable/css/styles.css";
 import getDataTransferFiles from "../lib/getDataTransferFiles";
 import uploadPlaceholderPlugin from "../lib/uploadPlaceholder";
 import insertFiles from "../commands/insertFiles";
@@ -134,12 +137,15 @@ export default class Image extends Node {
         title: {
           default: null,
         },
+        width: {
+          default: 0,
+        },
       },
       content: "text*",
       marks: "",
       group: "inline",
       selectable: true,
-      draggable: true,
+      draggable: false,
       parseDOM: [
         {
           tag: "div[class~=image]",
@@ -151,11 +157,16 @@ export default class Image extends Node {
             const layoutClass = layoutClassMatched
               ? layoutClassMatched[1]
               : null;
+
+            const width = img.clientWidth;
+            console.log(width);
+
             return {
               src: img?.getAttribute("src"),
               alt: img?.getAttribute("alt"),
               title: img?.getAttribute("title"),
               layoutClass: layoutClass,
+              width,
             };
           },
         },
@@ -248,9 +259,44 @@ export default class Image extends Node {
     downloadImageNode(node);
   };
 
+  onResize = ({ node, getPos }) => (event, { element, size, handle }) => {
+    // const img = event.target.previousElementSibling.querySelector("img");
+    // if (img && img.tagName.toUpperCase() === "IMG") {
+    //   console.log(img.naturalWidth);
+    // } else {
+    //   console.log(event.target);
+    // }
+
+    const { src } = node.attrs;
+    const { view } = this.editor;
+    const { tr } = view.state;
+
+    // update meta on object
+    const pos = getPos();
+    const transaction = tr.setNodeMarkup(pos, undefined, {
+      src,
+      width: size.width,
+    });
+    view.dispatch(transaction);
+  };
+
+  onImgLoad = (img, { node, getPos }) => {
+    const { view } = this.editor;
+    const { tr } = view.state;
+    // update meta on object
+    this.editor.view.dispatch(
+      tr.setNodeMarkup(getPos(), undefined, {
+        src: node.attrs.src,
+        width: img.clientWidth,
+      })
+    );
+  };
+
   component = props => {
-    const { theme, isSelected } = props;
-    const { alt, src, title, layoutClass } = props.node.attrs;
+    const { isSelected } = props;
+    const { alt, src, title, layoutClass, width } = props.node.attrs;
+    console.log(width);
+
     const className = layoutClass ? `image image-${layoutClass}` : "image";
 
     return (
@@ -265,19 +311,18 @@ export default class Image extends Node {
               onClick={this.handleDownload(props)}
             />
           </Button>
-          <ImageZoom
-            image={{
-              src,
-              alt,
-              title,
-            }}
-            defaultStyles={{
-              overlay: {
-                backgroundColor: theme.background,
-              },
-            }}
-            shouldRespectMaxDimension
-          />
+          <Resizable width={width} height={0} onResize={this.onResize(props)}>
+            <div className="box" style={width ? { width: width + "px" } : {}}>
+              <ImageZoom>
+                <img
+                  src={src}
+                  alt={alt}
+                  title={title}
+                  onLoad={ev => this.onImgLoad(ev.target, props)}
+                />
+              </ImageZoom>
+            </div>
+          </Resizable>
         </ImageWrapper>
         <Caption
           onKeyDown={this.handleKeyDown(props)}

@@ -33,6 +33,9 @@ module.exports = {
     client: {
       overlay: false,
     },
+    // static: {
+    //   directory: path.join(__dirname, "../"),
+    // },
   },
   watchOptions: { aggregateTimeout: 600, ignored: ["**/node_modules"] },
   stats: { preset: "errors-only", timings: true },

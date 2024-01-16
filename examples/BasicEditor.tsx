@@ -38,6 +38,12 @@ const onChange = (callback: () => string) => {
   console.log(callback());
 };
 
+const defaultText = `
+* Markdown 作为轻量级标记语言被广泛使用，多数产研同学熟悉Markdown语法，是撰写技术文档的首选方案；
+* 编辑器在文本格式编辑上提供了交互友好的可视化工具，如图片上传、链接、代码、表格等；  ![](https://s3-gzpu-inter.didistatic.com/base-docs/base-docs/20220711205536478cf99orw5ly.png)
+* 为了更精细地调整格式，我们还提供了纯Markdown源码编辑方式，可以随时切换
+`;
+
 const Editor = (): ReactElement => {
   return (
     <div style={{ margin: "50px 100px" }}>
@@ -47,9 +53,11 @@ const Editor = (): ReactElement => {
           border: "1px solid #dedede",
           height: "600px",
           padding: "10px 30px",
+          overflowY: "auto",
         }}
       >
         <RMEditor
+          defaultValue={defaultText}
           dictionary={Dictionary}
           theme={Theme}
           uploadImage={onImageUpload}
