@@ -138,7 +138,7 @@ export default class Image extends Node {
           default: null,
         },
         width: {
-          default: 0,
+          default: null,
         },
       },
       content: "text*",
@@ -260,14 +260,7 @@ export default class Image extends Node {
   };
 
   onResize = ({ node, getPos }) => (event, { element, size, handle }) => {
-    // const img = event.target.previousElementSibling.querySelector("img");
-    // if (img && img.tagName.toUpperCase() === "IMG") {
-    //   console.log(img.naturalWidth);
-    // } else {
-    //   console.log(event.target);
-    // }
-
-    const { src } = node.attrs;
+    const { src, alt, title, layoutClass } = node.attrs;
     const { view } = this.editor;
     const { tr } = view.state;
 
@@ -275,19 +268,29 @@ export default class Image extends Node {
     const pos = getPos();
     const transaction = tr.setNodeMarkup(pos, undefined, {
       src,
+      alt,
+      title,
+      layoutClass,
       width: size.width,
     });
     view.dispatch(transaction);
   };
 
+  initWidth = 0;
+
   onImgLoad = (img, { node, getPos }) => {
+    this.initWidth = img.clientWidth;
     const { view } = this.editor;
     const { tr } = view.state;
+    const { src, alt, title, layoutClass, width } = node.attrs;
     // update meta on object
     this.editor.view.dispatch(
       tr.setNodeMarkup(getPos(), undefined, {
-        src: node.attrs.src,
-        width: img.clientWidth,
+        src,
+        alt,
+        title,
+        layoutClass,
+        width: width || img.clientWidth,
       })
     );
   };
@@ -295,7 +298,8 @@ export default class Image extends Node {
   component = props => {
     const { isSelected } = props;
     const { alt, src, title, layoutClass, width } = props.node.attrs;
-    console.log(width);
+    // console.log(width);
+    // console.log(this.initWidth);
 
     const className = layoutClass ? `image image-${layoutClass}` : "image";
 
@@ -311,8 +315,15 @@ export default class Image extends Node {
               onClick={this.handleDownload(props)}
             />
           </Button>
-          <Resizable width={width} height={0} onResize={this.onResize(props)}>
-            <div className="box" style={width ? { width: width + "px" } : {}}>
+          <Resizable
+            width={width || 0}
+            height={0}
+            onResize={this.onResize(props)}
+          >
+            <div
+              className={this.initWidth !== width ? "resized" : undefined}
+              style={width ? { width: width + "px" } : {}}
+            >
               <ImageZoom>
                 <img
                   src={src}
@@ -341,15 +352,23 @@ export default class Image extends Node {
   };
 
   toMarkdown(state, node) {
+    const { alt, src, title, layoutClass, width } = node.attrs;
     let markdown =
       " ![" +
-      state.esc((node.attrs.alt || "").replace("\n", "") || "") +
+      state.esc((alt || "").replace("\n", "") || "") +
       "](" +
-      state.esc(node.attrs.src);
-    if (node.attrs.layoutClass) {
-      markdown += ' "' + state.esc(node.attrs.layoutClass) + '"';
-    } else if (node.attrs.title) {
-      markdown += ' "' + state.esc(node.attrs.title) + '"';
+      state.esc(src);
+    if (layoutClass || width) {
+      const titleTokens: string[] = [];
+      if (layoutClass) {
+        titleTokens.push(state.esc(layoutClass));
+      }
+      if (width) {
+        titleTokens.push(`width=${width}`);
+      }
+      markdown += ` "${titleTokens.join(",")}"`;
+    } else if (title) {
+      markdown += ' "' + state.esc(title) + '"';
     }
     markdown += ")";
     state.write(markdown);

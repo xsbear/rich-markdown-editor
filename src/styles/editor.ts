@@ -44,6 +44,11 @@ export const StyledEditor = styled("div")<{
       max-height: 75vh;
     }
 
+    .resized img {
+      width: 100%;
+      max-height: unset;
+    }
+
     .ProseMirror-selectednode img {
       pointer-events: initial;
     }
