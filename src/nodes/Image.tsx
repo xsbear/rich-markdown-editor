@@ -86,12 +86,14 @@ const uploadPlugin = options =>
     },
   });
 
-const IMAGE_CLASSES = ["right-50", "left-50"];
+// const IMAGE_CLASSES = ["right-50", "left-50"];
 const getLayoutAndTitle = tokenTitle => {
   if (!tokenTitle) return {};
-  if (IMAGE_CLASSES.includes(tokenTitle)) {
+  const matches = /(right-50|left-50)?,?(?:width=(\d+))?/.exec(tokenTitle);
+  if (matches) {
     return {
-      layoutClass: tokenTitle,
+      layoutClass: matches[1] || null,
+      width: matches[2] ? Number(matches[2]) : null,
     };
   } else {
     return {
@@ -140,6 +142,9 @@ export default class Image extends Node {
         width: {
           default: null,
         },
+        initWidth: {
+          default: null,
+        },
       },
       content: "text*",
       marks: "",
@@ -158,15 +163,12 @@ export default class Image extends Node {
               ? layoutClassMatched[1]
               : null;
 
-            const width = img.clientWidth;
-            console.log(width);
-
             return {
               src: img?.getAttribute("src"),
               alt: img?.getAttribute("alt"),
               title: img?.getAttribute("title"),
               layoutClass: layoutClass,
-              width,
+              width: img.clientWidth,
             };
           },
         },
@@ -226,8 +228,6 @@ export default class Image extends Node {
 
   handleBlur = ({ node, getPos }) => event => {
     const alt = event.target.innerText;
-    const { src, title, layoutClass } = node.attrs;
-
     if (alt === node.attrs.alt) return;
 
     const { view } = this.editor;
@@ -236,10 +236,8 @@ export default class Image extends Node {
     // update meta on object
     const pos = getPos();
     const transaction = tr.setNodeMarkup(pos, undefined, {
-      src,
+      ...node.attrs,
       alt,
-      title,
-      layoutClass,
     });
     view.dispatch(transaction);
   };
@@ -260,46 +258,35 @@ export default class Image extends Node {
   };
 
   onResize = ({ node, getPos }) => (event, { element, size, handle }) => {
-    const { src, alt, title, layoutClass } = node.attrs;
     const { view } = this.editor;
     const { tr } = view.state;
 
     // update meta on object
     const pos = getPos();
     const transaction = tr.setNodeMarkup(pos, undefined, {
-      src,
-      alt,
-      title,
-      layoutClass,
+      ...node.attrs,
       width: size.width,
     });
     view.dispatch(transaction);
   };
 
-  initWidth = 0;
-
   onImgLoad = (img, { node, getPos }) => {
-    this.initWidth = img.clientWidth;
-    const { view } = this.editor;
-    const { tr } = view.state;
-    const { src, alt, title, layoutClass, width } = node.attrs;
-    // update meta on object
-    this.editor.view.dispatch(
-      tr.setNodeMarkup(getPos(), undefined, {
-        src,
-        alt,
-        title,
-        layoutClass,
-        width: width || img.clientWidth,
-      })
-    );
+    setTimeout(() => {
+      const { view } = this.editor;
+      const { tr } = view.state;
+      // update meta on object
+      this.editor.view.dispatch(
+        tr.setNodeMarkup(getPos(), undefined, {
+          ...node.attrs,
+          initWidth: img.clientWidth,
+        })
+      );
+    }, 0);
   };
 
   component = props => {
     const { isSelected } = props;
-    const { alt, src, title, layoutClass, width } = props.node.attrs;
-    // console.log(width);
-    // console.log(this.initWidth);
+    const { alt, src, title, layoutClass, width, initWidth } = props.node.attrs;
 
     const className = layoutClass ? `image image-${layoutClass}` : "image";
 
@@ -316,13 +303,15 @@ export default class Image extends Node {
             />
           </Button>
           <Resizable
-            width={width || 0}
+            width={width || initWidth || 0}
             height={0}
             onResize={this.onResize(props)}
           >
             <div
-              className={this.initWidth !== width ? "resized" : undefined}
-              style={width ? { width: width + "px" } : {}}
+              className={width ? "resized" : undefined}
+              style={
+                width || initWidth ? { width: (width || initWidth) + "px" } : {}
+              }
             >
               <ImageZoom>
                 <img
@@ -339,6 +328,7 @@ export default class Image extends Node {
           onKeyDown={this.handleKeyDown(props)}
           onBlur={this.handleBlur(props)}
           className="caption"
+          style={{ width: width || initWidth || "unset" }}
           tabIndex={-1}
           role="textbox"
           contentEditable
@@ -366,7 +356,9 @@ export default class Image extends Node {
       if (width) {
         titleTokens.push(`width=${width}`);
       }
-      markdown += ` "${titleTokens.join(",")}"`;
+      if (titleTokens.length) {
+        markdown += ` "${titleTokens.join(",")}"`;
+      }
     } else if (title) {
       markdown += ' "' + state.esc(title) + '"';
     }

@@ -52,6 +52,11 @@ export const StyledEditor = styled("div")<{
     .ProseMirror-selectednode img {
       pointer-events: initial;
     }
+
+    .react-resizable-handle-se {
+      bottom: -6px;
+      right: -6px;
+    }
   }
 
   .image.placeholder {
