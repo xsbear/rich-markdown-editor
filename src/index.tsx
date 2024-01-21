@@ -146,6 +146,7 @@ export type Props = {
   onSearchLink?: (term: string) => Promise<SearchResult[]>;
   onClickLink: (href: string, event: MouseEvent) => void;
   onHoverLink?: (event: MouseEvent) => boolean;
+  enableImageResize?: boolean;
   linkAutoAddProtocol?: boolean;
   onClickHashtag?: (tag: string, event: MouseEvent) => void;
   onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
@@ -356,6 +357,7 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
             onImageUploadStart: this.props.onImageUploadStart,
             onImageUploadStop: this.props.onImageUploadStop,
             onShowToast: this.props.onShowToast,
+            enableImageResize: this.props.enableImageResize,
           }),
           new Table(),
           new TableCell({

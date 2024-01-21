@@ -150,7 +150,7 @@ export default class Image extends Node {
       marks: "",
       group: "inline",
       selectable: true,
-      draggable: false,
+      draggable: !this.options.enableImageResize,
       parseDOM: [
         {
           tag: "div[class~=image]",
@@ -290,6 +290,8 @@ export default class Image extends Node {
 
     const className = layoutClass ? `image image-${layoutClass}` : "image";
 
+    const { enableImageResize } = this.editor.props;
+
     return (
       <div contentEditable={false} className={className}>
         <ImageWrapper
@@ -302,27 +304,35 @@ export default class Image extends Node {
               onClick={this.handleDownload(props)}
             />
           </Button>
-          <Resizable
-            width={width || initWidth || 0}
-            height={0}
-            onResize={this.onResize(props)}
-          >
-            <div
-              className={width ? "resized" : undefined}
-              style={
-                width || initWidth ? { width: (width || initWidth) + "px" } : {}
-              }
+          {enableImageResize ? (
+            <Resizable
+              width={width || initWidth || 0}
+              height={0}
+              onResize={this.onResize(props)}
             >
-              <ImageZoom>
-                <img
-                  src={src}
-                  alt={alt}
-                  title={title}
-                  onLoad={ev => this.onImgLoad(ev.target, props)}
-                />
-              </ImageZoom>
-            </div>
-          </Resizable>
+              <div
+                className={width ? "resized" : undefined}
+                style={
+                  width || initWidth
+                    ? { width: (width || initWidth) + "px" }
+                    : {}
+                }
+              >
+                <ImageZoom>
+                  <img
+                    src={src}
+                    alt={alt}
+                    title={title}
+                    onLoad={ev => this.onImgLoad(ev.target, props)}
+                  />
+                </ImageZoom>
+              </div>
+            </Resizable>
+          ) : (
+            <ImageZoom>
+              <img src={src} alt={alt} title={title} />
+            </ImageZoom>
+          )}
         </ImageWrapper>
         <Caption
           onKeyDown={this.handleKeyDown(props)}
