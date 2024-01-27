@@ -8,6 +8,7 @@ import tablesRule from "../rules/tables";
 import noticesRule from "../rules/notices";
 import underlinesRule from "../rules/underlines";
 import emojiRule from "../rules/emoji";
+import imagesRule from "../rules/images";
 
 const defaultRules = [
   embedsRule,
@@ -19,6 +20,7 @@ const defaultRules = [
   tablesRule,
   noticesRule,
   emojiRule,
+  imagesRule,
 ];
 
 export default function renderToHtml(

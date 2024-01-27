@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
 const { ProgressPlugin } = require("webpack");
+const TerserPlugin = require("terser-webpack-plugin");
 
 const pkg = require("./package.json");
 
@@ -28,8 +29,22 @@ module.exports = {
       type: "umd",
     },
   },
-  entry: { "rich-markdown-editor": path.resolve(__dirname, "./src/index.tsx") },
+  entry: {
+    "rich-markdown-editor": path.resolve(__dirname, "./src/index.tsx"),
+    "rich-markdown-editor.development": path.resolve(
+      __dirname,
+      "./src/index.tsx"
+    ),
+  },
   mode: "production",
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        exclude: /development/,
+      }),
+    ],
+  },
   plugins: [
     new ProgressPlugin({
       activeModules: false,

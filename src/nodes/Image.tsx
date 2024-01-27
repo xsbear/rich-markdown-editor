@@ -11,6 +11,7 @@ import getDataTransferFiles from "../lib/getDataTransferFiles";
 import uploadPlaceholderPlugin from "../lib/uploadPlaceholder";
 import insertFiles from "../commands/insertFiles";
 import Node from "./Node";
+import imagesRule from "../rules/images";
 
 /**
  * Matches following attributes in Markdown-typed image: [, alt, src, class]
@@ -123,6 +124,10 @@ const downloadImageNode = async node => {
 export default class Image extends Node {
   get name() {
     return "image";
+  }
+
+  get rulePlugins() {
+    return [imagesRule];
   }
 
   get schema() {
