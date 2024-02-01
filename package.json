@@ -1,9 +1,8 @@
 {
   "name": "@dt/rich-markdown-editor",
   "description": "A rich text editor with Markdown shortcuts",
-  "version": "0.0.7",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "version": "0.0.7-dev",
+  "typings": "lib/index.d.ts",
   "license": "BSD-3-Clause",
   "funding": "https://github.com/sponsors/outline",
   "scripts": {
@@ -24,7 +23,8 @@
     ]
   },
   "files": [
-    "dist/"
+    "lib/index.d.ts",
+    "lib/server.d.ts"
   ],
   "dependencies": {
     "copy-to-clipboard": "^3.0.8",

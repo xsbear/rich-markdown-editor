@@ -16,7 +16,7 @@
       "jest"
     ],
     "rootDir": "src",
-    "outDir": "./dist",
+    "outDir": "./lib",
     "stripInternal": true,
     "removeComments": true,
     "declarationMap": true,
@@ -27,6 +27,7 @@
   ],
   "exclude": [
     "dist",
+    "lib",
     "node_modules"
   ]
 }
