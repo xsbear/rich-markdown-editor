@@ -42,18 +42,21 @@ const defaultText = `
 __aa__
 ==bb==
 
-![](https://s3-gz01.didistatic.com/base-docs/base-docs/20220711205536478cf99orw5ly.png "right-50,width=560")
+![](https://s3-gz01.didistatic.com/base-docs/base-docs/20220711205536478cf99orw5ly.png "width=400")
+
+## img2
+![](https://s3-gzpu-inter.didistatic.com/test-create-flow/test-perm2/20231113130404181ism2velsqw.png)
 
 ## heading2
 `;
 
-const html = renderToHtml(defaultText);
-console.log(html);
+// const html = renderToHtml(defaultText);
+// console.log(html);
 const Editor = (): ReactElement => {
   const editorRef = useRef<RMEditor>(null);
 
   const onChange = (callback: () => string) => {
-    console.log(callback());
+    console.log("onchange......", callback());
     if (editorRef.current) {
       // console.log(editorRef.current.view.state.doc.content.forEach(item => ));
     }
@@ -61,10 +64,10 @@ const Editor = (): ReactElement => {
 
   return (
     <div style={{ margin: "50px 100px" }}>
-      <div
+      {/* <div
         dangerouslySetInnerHTML={{ __html: html }}
         className="render-html"
-      ></div>
+      ></div> */}
       <h2>Basic Example</h2>
       <div
         style={{

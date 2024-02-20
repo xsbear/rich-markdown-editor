@@ -1,6 +1,7 @@
 import { MarkdownSerializerState } from "prosemirror-markdown";
 import { Node as ProsemirrorNode } from "prosemirror-model";
 import Extension from "../lib/Extension";
+import ComponentView from "../lib/ComponentView";
 
 export default abstract class Node extends Extension {
   get type() {
@@ -20,4 +21,6 @@ export default abstract class Node extends Extension {
   parseMarkdown() {
     return;
   }
+
+  viewInstance: ComponentView;
 }

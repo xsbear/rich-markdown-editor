@@ -43,6 +43,7 @@ export default class ComponentView {
       : document.createElement("div");
 
     this.renderElement();
+    this.node.viewInstance = this;
   }
 
   renderElement() {
@@ -69,6 +70,7 @@ export default class ComponentView {
     }
 
     this.node = node;
+    this.node.viewInstance = this;
     this.renderElement();
     return true;
   }

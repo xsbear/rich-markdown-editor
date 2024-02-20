@@ -232,7 +232,7 @@ export default class Image extends Node {
   };
 
   handleBlur = ({ node, getPos }) => event => {
-    const alt = event.target.innerText;
+    const alt = event.target.innerText || null;
     if (alt === node.attrs.alt) return;
 
     const { view } = this.editor;
@@ -262,31 +262,27 @@ export default class Image extends Node {
     downloadImageNode(node);
   };
 
-  onResize = ({ node, getPos }) => (event, { element, size, handle }) => {
+  onResize = ({ node }) => (event, { size }) => {
+    if (node.viewInstance) {
+      node.attrs.initWidth = size.width;
+      node.viewInstance.update(node);
+    }
+  };
+
+  onResizeStop = ({ node, getPos }) => (event, { size }) => {
     const { view } = this.editor;
     const { tr } = view.state;
 
-    // update meta on object
-    const pos = getPos();
-    const transaction = tr.setNodeMarkup(pos, undefined, {
+    const transaction = tr.setNodeMarkup(getPos(), undefined, {
       ...node.attrs,
       width: size.width,
     });
     view.dispatch(transaction);
   };
 
-  onImgLoad = (img, { node, getPos }) => {
-    setTimeout(() => {
-      const { view } = this.editor;
-      const { tr } = view.state;
-      // update meta on object
-      this.editor.view.dispatch(
-        tr.setNodeMarkup(getPos(), undefined, {
-          ...node.attrs,
-          initWidth: img.clientWidth,
-        })
-      );
-    }, 0);
+  onImgLoad = (img, { node }) => {
+    node.attrs.initWidth = img.clientWidth;
+    node.viewInstance.update(node);
   };
 
   component = props => {
@@ -311,15 +307,16 @@ export default class Image extends Node {
           </Button>
           {enableImageResize ? (
             <Resizable
-              width={width || initWidth || 0}
+              width={initWidth || width || 0}
               height={0}
               onResize={this.onResize(props)}
+              onResizeStop={this.onResizeStop(props)}
             >
               <div
                 className={width ? "resized" : undefined}
                 style={
-                  width || initWidth
-                    ? { width: (width || initWidth) + "px" }
+                  initWidth || width
+                    ? { width: (initWidth || width) + "px" }
                     : {}
                 }
               >
@@ -343,7 +340,7 @@ export default class Image extends Node {
           onKeyDown={this.handleKeyDown(props)}
           onBlur={this.handleBlur(props)}
           className="caption"
-          style={{ width: width || initWidth || "unset" }}
+          style={{ width: width || "unset" }}
           tabIndex={-1}
           role="textbox"
           contentEditable
